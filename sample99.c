@@ -6,6 +6,7 @@ int main()
 {
 	FILE *fa *fb, *fc;
 	
+	int
 	int i, j, k;
 	char str[100], str1[100];
 	char tem;
