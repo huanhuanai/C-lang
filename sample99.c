@@ -1,9 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+
 int main()
 {
 	FILE *fa *fb, *fc;
+	
 	int i, j, k;
 	char str[100], str1[100];
 	char tem;
