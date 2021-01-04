@@ -4,9 +4,9 @@
 
 int main()
 {
-	FILE *fa *fb, *fc;
+	FILE *fa, *fb, *fc;
 		
-	int i, j, k;
+	int i, j;
 	char str[100], str1[100];
 	char tem;
 	if((fa = fopen("A.txt", "r")) == NULL)
@@ -16,14 +16,14 @@ int main()
 	}
 	fgets(str, 99 ,fa);
 	fclose(fa);
-	if((fb = fopen("B.txt", "r")) = NULL)
+	if((fb = fopen("B.txt", "r")) == NULL)
 	{
 		printf("error:cannot open B file!\n");
 		exit(0);
 	}
 	fgets(str1, 100, fb);
 	fclose(fb);
-	stract(str, str1);
+//	stract(str, str1);
 	for(i = strlen(str) - 1; i > 1; i--)
 	{
 		for(j = 0; j < i; j++)
