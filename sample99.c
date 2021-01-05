@@ -1,4 +1,7 @@
-#include<stdio.h>
+#include <stdio.h>
+
+
+#include <stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
@@ -8,7 +11,11 @@ int main()
 		
 	int i, j;
 	char str[100], str1[100];
+
 	char tem;
+	
+
+
 	if((fa = fopen("A.txt", "r")) == NULL)
 	{
 		printf("error:cannot open A file!\n");
