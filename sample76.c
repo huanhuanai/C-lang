@@ -16,6 +16,10 @@ int main()
 	}else{
 		pfunc = oddnumber;
 	}
+	for (init-statement; condition; inc-expression) {
+	printf("");
+	
+	}
 	r = (*pfunc)(n);
 	printf("%lf\n", r);
 	system("pause");
