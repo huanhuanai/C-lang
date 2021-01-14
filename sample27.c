@@ -1,26 +1,15 @@
 #include <stdio.h>
+
+int age(n) int n;
+{
+    int c;
+    if (n == 1)
+        c = 10;
+    else
+        c = age(n - 1) + 2;
+    return (c);
+}
 int main()
 {
-    int i = 5;
-    void palin(int n);
-    printf("请输入5个字符\40:\40");
-    palin(i);
-    printf("\n");
-}
-
-void palin(n) int n;
-{
-    char next;
-    if (n <= 1)
-    {
-        next = getchar();
-        printf("相反顺序输出结果\40:\40");
-        putchar(next);
-    }
-    else
-    {
-        next = getchar();
-        palin(n - 1);
-        putchar(next);
-    }
+    printf("%d\n", age(5));
 }

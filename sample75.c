@@ -1,4 +1,4 @@
-ii#include<stdio.h>
+#include <stdio.h>
 int main() {
 	int n, reversedNumber = 0, remainder;
 	printf("q请输入一个整数:");

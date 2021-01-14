@@ -1,6 +1,46 @@
+
+" __  ____   __  _   ___     _____ __  __ ____   ____
+"|  \/  \ \ / / | \ | \ \   / /_ _|  \/  |  _ \ / ___|
+"| |\/| |\ V /  |  \| |\ \ / / | || |\/| | |_) | |
+"| |  | | | |   | |\  | \ V /  | || |  | |  _ <| |___
+"|_|  |_| |_|   |_| \_|  \_/  |___|_|  |_|_| \_\\____|
+
+" Author: @huanhuanai
+
+" ===
+" === Editor behavior 
+" ===
+set number
+set relativenumber
+
+" ===
+" === Terminal Behaviors
+" ===
+let g:neoterm_autoscroll = 1
+autocmd TermOpen term://* startinsert
+tnoremap <C-N> <C-\><C-N>
+tnoremap <C-O> <C-\><C-N><C-O>
+let g:terminal_color_0  = '#000000'
+let g:terminal_color_1  = '#FF5555'
+let g:terminal_color_2  = '#50FA7B'
+let g:terminal_color_3  = '#F1FA8C'
+let g:terminal_color_4  = '#BD93F9'
+let g:terminal_color_5  = '#FF79C6'
+let g:terminal_color_6  = '#8BE9FD'
+let g:terminal_color_7  = '#BFBFBF'
+let g:terminal_color_8  = '#4D4D4D'
+let g:terminal_color_9  = '#FF6E67'
+let g:terminal_color_10 = '#5AF78E'
+let g:terminal_color_11 = '#F4F99D'
+let g:terminal_color_12 = '#CAA9FA'
+let g:terminal_color_13 = '#FF92D0'
+let g:terminal_color_14 = '#9AEDFE'
+
+" ===
+" === 插件 
+" ===
 call plug#begin('~/.config/nvim/plugged')                
 
-"defx plugins place here
 if has('nvim')
   Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'kristijanhusak/defx-icons'
@@ -10,6 +50,8 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
+Plug 'theniceboy/nvim-deus'
+Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mhinz/vim-startify'
 Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
@@ -29,6 +71,22 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-commentary'
 call plug#end()
 
+
+
+
+" ===
+" === Cursor Movement 
+" ===
+" New cursor movement in insert modle(the default arrow keys are used for resizing windows)
+"            ^
+"            k
+" Ctrl + < h   l >
+"            j
+"            v
+inoremap <C-l> <Right>
+inoremap <C-h> <Left>
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
 
 
 " ===
@@ -69,82 +127,74 @@ autocmd FileType defx call s:defx_mappings()
 " ===
 " === coc.nvim 自动安装插件
 " ===
-let g:coc_global_extensions = ['coc-json', 'coc-clangd', 'coc-vimlsp', 'coc-marketplace']
-
-" ===
-" === 自动补全颜色设置
-" ===
-hi Pmenu ctermfg=Black ctermbg=LightGray guibg=#444444
-hi PmenuSel ctermfg=7 ctermbg=4 guibg=#555555 guifg=#ffffff
-hi NonText ctermfg=gray guifg=grey10
+let g:coc_global_extensions = [
+			\'coc-json', 
+			\'coc-clangd', 
+			\'coc-vimlsp', 
+			\'coc-marketplace',
+			\'coc-snippets',
+			\'coc-jedi']
 
 " ===
 " === python一键运行
 " ===
-map <F5> :call CompileRunGcc()<CR>
-    func! CompileRunGcc()
-        exec "w"
-if &filetype == 'c'
-            exec "!g++ % -o %<"
-            exec "!time ./%<"
-elseif &filetype == 'cpp'
-            exec "!g++ % -o %<"
-            exec "!time ./%<"
-elseif &filetype == 'java'
-            exec "!javac %"
-            exec "!time java %<"
-elseif &filetype == 'sh'
-            :!time bash %
-elseif &filetype == 'python'
-            exec "!time python %"
-elseif &filetype == 'html'
-            exec "!firefox % &"
-elseif &filetype == 'go'
-    "        exec "!go build %<"
-            exec "!time go run %"
-elseif &filetype == 'mkd'
-            exec "!~/.vim/markdown.pl % > %.html &"
-            exec "!firefox %.html &"
-endif
-    endfunc
+" Compile function
+noremap <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'cpp'
+		set splitbelow
+		exec "!g++ -std=c++11 % -Wall -o %<"
+		:sp
+		:res -15
+		:term ./%<
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %<"
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		set splitbelow
+		:sp
+		:term python3 %
+	elseif &filetype == 'html'
+		silent! exec "!".g:mkdp_browser." % &"
+	elseif &filetype == 'markdown'
+		exec "InstantMarkdownPreview"
+	elseif &filetype == 'tex'
+		silent! exec "VimtexStop"
+		silent! exec "VimtexCompile"
+	elseif &filetype == 'dart'
+		exec "CocCommand flutter.run -d ".g:flutter_default_device." ".g:flutter_run_args
+		silent! exec "CocCommand flutter.dev.openDevLog"
+	elseif &filetype == 'javascript'
+		set splitbelow
+		:sp
+		:term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
+	elseif &filetype == 'go'
+		set splitbelow
+		:sp
+		:term go run .
+	endif
+endfunc
 
 " ===
-" === 定义跳出括号函数，用于跳出括号
+" === 主题 
 " ===
-
-
-
-" ===
-" === Terminal Behaviors
-" ===
-let g:neoterm_autoscroll = 1
-autocmd TermOpen term://* startinsert
-tnoremap <C-N> <C-\><C-N>
-tnoremap <C-O> <C-\><C-N><C-O>
-let g:terminal_color_0  = '#000000'
-let g:terminal_color_1  = '#FF5555'
-let g:terminal_color_2  = '#50FA7B'
-let g:terminal_color_3  = '#F1FA8C'
-let g:terminal_color_4  = '#BD93F9'
-let g:terminal_color_5  = '#FF79C6'
-let g:terminal_color_6  = '#8BE9FD'
-let g:terminal_color_7  = '#BFBFBF'
-let g:terminal_color_8  = '#4D4D4D'
-let g:terminal_color_9  = '#FF6E67'
-let g:terminal_color_10 = '#5AF78E'
-let g:terminal_color_11 = '#F4F99D'
-let g:terminal_color_12 = '#CAA9FA'
-let g:terminal_color_13 = '#FF92D0'
-let g:terminal_color_14 = '#9AEDFE'
+colorscheme gruvbox
+set background=dark
 
 " ===
-" === coc config
+" === coc snippets
 " ===
 " Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
+imap <C-c> <Plug>(coc-snippets-expand)
 
 " Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+vmap <C-v> <Plug>(coc-snippets-select)
 
 " Use <C-j> for jump to next placeholder, it's default of coc.nvim
 let g:coc_snippet_next = '<c-j>'
@@ -153,43 +203,14 @@ let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+imap <C-c> <Plug>(coc-snippets-expand-jump)
 
 " Use <leader>x for convert visual selected code to snippet
 xmap <leader>x  <Plug>(coc-convert-snippet)
 
 " ===
-" === coc config
+" === coc.nvim config
 " ===
-" TextEdit might fail if hidden is not set.
-set hidden
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=100
-
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-"coc config place here
 " TextEdit might fail if hidden is not set.
 set hidden
 

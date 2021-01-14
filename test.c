@@ -1,18 +1,15 @@
-//crorrect error
-#include <math.h>
-#include<stdlib.h>
-#include<stdio.h>
+#include <stdio.h>
 
-
-
-
-
-int main()
-
+int age(n) int n;
 {
-	for (int i = 0; i < 12; i++) {
-	
-	}
-	return 0;
+    int c;
+    if (n == 1)
+        c = 10;
+    else
+        c = age(n - 1) + 2;
+    return (c);
 }
-
+int main()
+{
+    printf("%d\n", age(5));
+}
